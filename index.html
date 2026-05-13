@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-title" content="Limpieza"/>
+<title>Plan de Limpieza</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+:root{
+  --bg:#ffffff;--bg2:#f8f9fa;--bg3:#f1f3f5;
+  --border:#dee2e6;--border2:#ced4da;
+  --text:#212529;--text2:#6c757d;--text3:#adb5bd;
+  --green:#1D9E75;--red:#E24B4A;--blue:#378ADD;
+  --yellow-bg:#fff9db;--yellow-border:#fab005;--yellow-text:#7c5d00;
+  --radius:10px;--radius-sm:6px;
+  --font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+}
+@media(prefers-color-scheme:dark){
+  :root{--bg:#1a1a1a;--bg2:#242424;--bg3:#2e2e2e;--border:#3a3a3a;--border2:#4a4a4a;--text:#f0f0f0;--text2:#aaaaaa;--text3:#666666;--yellow-bg:#2a2000;--yellow-border:#7c5d00;--yellow-text:#ffd43b;}
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:var(--font);font-size:15px;background:var(--bg);color:var(--text);max-width:600px;margin:0 auto;padding:16px}
+button{cursor:pointer;font-family:var(--font)}
+input{font-family:var(--font)}
+.home-title{font-size:20px;font-weight:600;margin-bottom:4px}
+.home-sub{font-size:13px;color:var(--text2);margin-bottom:16px}
+.backup-banner{background:var(--yellow-bg);border:1px solid var(--yellow-border);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.bb-text{flex:1;font-size:13px;color:var(--yellow-text)}
+.bb-btn{background:none;border:1px solid var(--yellow-border);border-radius:var(--radius-sm);padding:5px 10px;font-size:12px;color:var(--yellow-text);white-space:nowrap}
+.bb-dismiss{background:none;border:none;font-size:20px;color:var(--yellow-text);padding:0 4px;line-height:1}
+.role-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.role-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:20px 12px;text-align:center;cursor:pointer;transition:background .15s;user-select:none}
+.role-card:active{background:var(--bg2)}
+.role-card .rc-icon{font-size:28px;margin-bottom:8px;color:var(--text2)}
+.role-card .rc-name{font-size:15px;font-weight:600;color:var(--text)}
+.role-card .rc-sub{font-size:12px;color:var(--text2);margin-top:3px}
+.role-card.manager{grid-column:1/-1}
+.top-bar{display:flex;align-items:center;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.back-btn{background:none;border:1px solid var(--border);border-radius:var(--radius-sm);padding:7px 12px;font-size:13px;color:var(--text2);display:flex;align-items:center;gap:4px}
+.view-title{font-size:17px;font-weight:600;flex:1}
+.week-nav{display:flex;align-items:center;gap:6px;margin-left:auto}
+.week-nav button{background:none;border:1px solid var(--border);border-radius:var(--radius-sm);padding:6px 10px;font-size:14px;color:var(--text2)}
+.week-nav button:disabled{opacity:.35}
+.week-label{font-size:12px;color:var(--text2);white-space:nowrap}
+.prog-wrap{margin-bottom:16px}
+.prog-info{display:flex;justify-content:space-between;font-size:12px;color:var(--text2);margin-bottom:4px}
+.prog-bar{height:5px;background:var(--bg3);border-radius:4px;overflow:hidden}
+.prog-fill{height:100%;background:var(--green);border-radius:4px;transition:width .3s}
+.freq-tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.ftab{padding:6px 14px;border-radius:20px;border:1px solid var(--border);font-size:13px;cursor:pointer;background:var(--bg);color:var(--text2);user-select:none}
+.ftab.active{background:var(--bg3);color:var(--text);border-color:var(--border2);font-weight:600}
+.ftab .fbadge{display:inline-block;background:var(--bg2);border-radius:10px;padding:1px 7px;font-size:11px;margin-left:4px}
+.ftab.fall .fbadge{background:#d3f9d8;color:#2b8a3e}
+.daily-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.daily-table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:16px;min-width:320px}
+.daily-table th{font-weight:600;color:var(--text2);font-size:11px;text-transform:uppercase;letter-spacing:.04em;padding:8px 4px;text-align:center;border-bottom:1px solid var(--border)}
+.daily-table th.task-col{text-align:left;padding-left:0}
+.daily-table td{padding:7px 4px;text-align:center;border-bottom:1px solid var(--border)}
+.daily-table td.task-name{text-align:left;padding-left:0;color:var(--text);line-height:1.35;font-size:13px}
+.today-head{color:var(--blue)!important;font-weight:700!important}
+.day-check{width:28px;height:28px;border-radius:50%;border:2px solid var(--border2);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;user-select:none}
+.day-check.checked{background:var(--green);border-color:var(--green);color:#fff}
+.day-check.today-col{border-color:var(--blue)}
+.day-check.future{opacity:.3;pointer-events:none}
+.task-item{display:flex;align-items:flex-start;gap:12px;padding:12px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:8px;cursor:pointer;user-select:none}
+.task-item:active{background:var(--bg2)}
+.task-item.done .task-text{color:var(--text3);text-decoration:line-through}
+.chk{width:24px;height:24px;min-width:24px;border-radius:50%;border:2px solid var(--border2);display:flex;align-items:center;justify-content:center;margin-top:1px;font-size:13px}
+.task-item.done .chk{background:var(--green);border-color:var(--green);color:#fff}
+.task-text{font-size:14px;color:var(--text);line-height:1.4}
+.no-tasks{color:var(--text2);font-size:13px;padding:16px 0;text-align:center}
+.reset-btn{margin-top:12px;width:100%;padding:10px;border:1px solid var(--border);border-radius:var(--radius);background:none;font-size:13px;color:var(--text2)}
+.manager-tabs{display:flex;gap:0;margin-bottom:20px;border-bottom:1px solid var(--border)}
+.mtab{padding:10px 16px;font-size:14px;cursor:pointer;color:var(--text2);border-bottom:2px solid transparent;margin-bottom:-1px;background:none;border-top:none;border-left:none;border-right:none;font-weight:500}
+.mtab.active{color:var(--text);border-bottom-color:var(--text);font-weight:600}
+.month-nav{display:flex;align-items:center;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.month-nav button{background:none;border:1px solid var(--border);border-radius:var(--radius-sm);padding:6px 12px;font-size:13px;color:var(--text2)}
+.month-label{font-size:16px;font-weight:600;flex:1}
+.export-btn{background:none;border:1px solid var(--border);border-radius:var(--radius-sm);padding:6px 10px;font-size:12px;color:var(--text2);display:flex;align-items:center;gap:4px;white-space:nowrap}
+.dept-section{margin-bottom:24px}
+.dept-head{font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.reg-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.reg-table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:8px;min-width:300px}
+.reg-table th{font-weight:600;color:var(--text2);font-size:11px;padding:5px 6px;text-align:center;border-bottom:1px solid var(--border);white-space:nowrap}
+.reg-table th.task-col{text-align:left;min-width:130px}
+.reg-table td{padding:5px 6px;text-align:center;border-bottom:1px solid var(--border)}
+.reg-table td.task-name{text-align:left;color:var(--text);font-size:12px}
+.reg-table td.freq-label{font-size:11px;color:var(--text3)}
+.cell-ok{color:var(--green);font-size:15px}
+.cell-ko{color:var(--red);font-size:15px}
+.cell-na{color:var(--text3);font-size:11px}
+.legend{font-size:12px;color:var(--text2);margin-bottom:16px;display:flex;gap:12px;flex-wrap:wrap}
+.pin-screen{text-align:center;padding:40px 16px}
+.pin-screen h3{font-size:18px;font-weight:600;margin-bottom:6px}
+.pin-screen p{font-size:13px;color:var(--text2);margin-bottom:20px}
+.pin-input{border:1px solid var(--border2);border-radius:var(--radius);padding:10px 16px;font-size:20px;text-align:center;width:130px;letter-spacing:6px;background:var(--bg);color:var(--text)}
+.pin-actions{margin-top:12px;display:flex;gap:8px;justify-content:center}
+.pin-btn{border:1px solid var(--border2);border-radius:var(--radius-sm);padding:8px 22px;font-size:14px;background:none;color:var(--text)}
+.pin-btn.primary{background:var(--text);color:var(--bg)}
+.pin-error{color:var(--red);font-size:13px;margin-top:8px}
+.admin-dept-tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.adtab{padding:6px 14px;border-radius:20px;border:1px solid var(--border);font-size:13px;cursor:pointer;background:var(--bg);color:var(--text2)}
+.adtab.active{background:var(--bg3);color:var(--text);border-color:var(--border2);font-weight:600}
+.admin-freq-block{margin-bottom:20px}
+.admin-freq-label{font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px}
+.admin-task-row{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:6px}
+.admin-task-row input{flex:1;border:none;background:transparent;font-size:13px;color:var(--text);outline:none;padding:2px 4px;min-width:0}
+.admin-task-row input:focus{background:var(--bg2);border-radius:4px}
+.del-btn{background:none;border:none;color:var(--text3);font-size:18px;padding:2px 6px;line-height:1;border-radius:4px;min-width:30px}
+.del-btn:active{color:var(--red)}
+.add-task-row{display:flex;gap:8px;margin-top:8px}
+.add-task-input{flex:1;border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 12px;font-size:13px;color:var(--text);background:var(--bg);min-width:0}
+.add-task-input:focus{outline:none;border-color:var(--border2)}
+.add-task-btn{background:none;border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 14px;font-size:13px;color:var(--text2);white-space:nowrap}
+.saved-banner{background:#d3f9d8;border:1px solid #2b8a3e;border-radius:var(--radius-sm);padding:8px 12px;font-size:13px;color:#2b8a3e;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.admin-hint{font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.5}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+const MANAGER_PIN='1234';
+const DEFAULT_DEPTS={
+  almacen:{label:'Almacén',icon:'ti ti-building-warehouse',tasks:{
+    Diario:[],
+    Semanal:['Barrer suelo pasillo montacargas','Barrer y fregar suelo almacén seco','Barrer y fregar suelo congelador','Barrer y fregar suelo expedición'],
+    Quincenal:['Limpiar polvo y telarañas almacén seco'],
+    Mensual:['Limpiar paredes almacén seco']
+  }},
+  cocina:{label:'Cocina',icon:'ti ti-chef-hat',tasks:{
+    Diario:['Limpiar exterior hornos','Limpiar marmita','Limpiar marmita basculante','Limpiar marmita basculante grande','Limpiar variocooking','Limpiar exterior del abatidor','Limpiar con manguera cocina','Limpiar con manguera cuarto frío','Limpiar con manguera cuarto prep. materias primas','Limpiar con manguera pasillos','Limpiar y desinfectar mesas y superficies de trabajo'],
+    Semanal:['Limpiar croquetera','Limpiar dosificadora','Barrer suelo economato','Barrer y desinfectar suelo cuarto envasado','Limpiar campanas centrales (interior y exterior)','Limpiar puertas abatibles (cocina, cuarto frío, envasado, plonge, prep. materias)','Limpiar paredes y suelo cocina','Limpiar paredes y suelo prep. materias','Limpiar paredes, suelos y superficies','Limpiar y desinfectar barandillas suelo','Limpiar y desinfectar puertas refrigeración','Limpiar y desinfectar suelo platos preparados'],
+    Quincenal:['Limpiar en profundidad envasadora','Barrer y fregar suelo cuarto material aux. y menaje'],
+    Mensual:[]
+  }},
+  limpieza:{label:'Limpieza',icon:'ti ti-sparkles',tasks:{
+    Diario:['Barrer y fregar suelo entrada','Dejar menaje limpio, seco y en su sitio','Jabonar fregona','Limpiar y desinfectar pasamanos (congelador, material aux., platos preparados, refrigeración)','Limpiar, desinfectar y dejar secando bayetas','Luces apagadas al finalizar jornada','Puertas limpias y cerradas al finalizar jornada','Rellenar jabón lavamanos y spray desinfectante','Reponer dispensadores con papel','Reponer guantes, manguitos, delantales y vestimenta visitas','Revisión equipos apagados al finalizar jornada','Vaciar y limpiar filtro lavavajillas'],
+    Semanal:['Barrer y desinfectar suelo frutas y verduras','Barrer y fregar escaleras','Barrer y fregar suelo garita y oficinas','Barrer y fregar suelo cocina planta arriba','Limpiar interior hornos','Limpiar paredes, manillas y suelo descongelación','Limpiar paredes, manillas y suelo frutas y verduras','Limpiar paredes, manillas y suelo material aux. y menaje','Limpiar y desinfectar barandilla escaleras','Limpiar y desinfectar dispensadores de papel','Limpiar y desinfectar superficies garita, oficinas y sala reuniones','Limpiar y repasar marco ventanas cuarto frío','Limpieza general vestuarios','Soportes de cuchillos','Vaciar arquetas (cocina y general)','Vaciar y reponer papeleras y cubos basura','Revisar y reponer productos'],
+    Quincenal:['Limpiar campanas hornos (interior y exterior)','Limpiar ventanas y marcos (garita, cocina arriba, oficinas, sala reuniones)'],
+    Mensual:['Barrer y desinfectar suelo refrigeración','Limpiar soportes del techo (cocina, cuarto frío, recepción, refrigeración)','Limpiar y desinfectar estanterías (almacén, economato, refrigeración, cuarto menaje)']
+  }}
+};
+const FREQS=['Diario','Semanal','Quincenal','Mensual'];
+const DAYS=['L','M','X','J','V'];
+let view='home',currentDept=null,currentFreq='Diario',currentWeekOffset=0;
+let managerMonth=new Date(),pinMode=false,bannerDismissed=false;
+let managerTab='registros',adminDept='almacen',savedMsg=false;
+
+function getStorage(){try{return JSON.parse(localStorage.getItem('limpieza_v4')||'{}')}catch(e){return{}}}
+function setStorage(d){try{localStorage.setItem('limpieza_v4',JSON.stringify(d))}catch(e){}}
+function getDepts(){const s=getStorage();return s['__depts']?JSON.parse(JSON.stringify(s['__depts'])):JSON.parse(JSON.stringify(DEFAULT_DEPTS))}
+function saveDepts(d){const s=getStorage();s['__depts']=d;setStorage(s)}
+function getMonday(offset){const now=new Date(),day=now.getDay(),diff=(day===0?-6:1-day),mon=new Date(now);mon.setDate(now.getDate()+diff+offset*7);mon.setHours(0,0,0,0);return mon}
+function weekKey(m){return m.toISOString().slice(0,10)}
+function isFutureDay(monday,di){const t=new Date(monday);t.setDate(monday.getDate()+di);t.setHours(0,0,0,0);const td=new Date();td.setHours(0,0,0,0);return t>td}
+function isDue(freq,monday){const wn=getWeekNumber(monday);if(freq==='Quincenal')return wn%2===1;if(freq==='Mensual')return monday.getDate()<=7;return true}
+function getWeekNumber(d){const j=new Date(d.getFullYear(),0,1);return Math.ceil(((d-j)/86400000+j.getDay()+1)/7)}
+function fmtDate(d){return d.toLocaleDateString('es-ES',{day:'2-digit',month:'2-digit'})}
+function fmtMonth(d){return d.toLocaleDateString('es-ES',{month:'long',year:'numeric'})}
+function todayIdx(){const d=new Date().getDay();if(d===0||d===6)return -1;return d-1}
+function isWeekCurrent(monday){return weekKey(monday)===weekKey(getMonday(0))}
+function getLastWeekMonday(){return getMonday(-1)}
+function shouldShowBanner(){if(bannerDismissed)return false;const s=getStorage();const le=s['__lastExport'];if(!le)return true;return(Date.now()-new Date(le).getTime())/(1000*60*60*24)>=7}
+function getMonthMondays(year,month){let mondays=[],d=new Date(year,month,1);while(d.getDay()!==1)d.setDate(d.getDate()+1);while(mondays.length<=5){mondays.push(new Date(d));d.setDate(d.getDate()+7)}return mondays.filter(m=>{const f=new Date(m);f.setDate(m.getDate()+4);return m.getMonth()===month||f.getMonth()===month})}
+
+function render(){
+  document.getElementById('app').innerHTML=view==='home'?renderHome():view==='dept'?renderDept():pinMode?renderPin():renderManager();
+  attachEvents();
+}
+
+function renderBanner(){
+  if(!shouldShowBanner())return'';
+  const lm=getLastWeekMonday(),fri=new Date(lm);fri.setDate(lm.getDate()+4);
+  return`<div class="backup-banner"><i class="ti ti-device-floppy"></i><span class="bb-text">Guarda el backup de la semana pasada (${fmtDate(lm)}–${fmtDate(fri)}) en Drive</span><button class="bb-btn" onclick="exportWeekExcel(getLastWeekMonday())"><i class="ti ti-download"></i> Descargar</button><button class="bb-dismiss" onclick="dismissBanner()">×</button></div>`;
+}
+
+function renderHome(){
+  const depts=getDepts();
+  return`<h2 class="home-title">Plan de Limpieza</h2><p class="home-sub">Selecciona tu departamento</p>${renderBanner()}<div class="role-grid">${Object.entries(depts).map(([id,d])=>`<div class="role-card" onclick="openDept('${id}')"><div class="rc-icon"><i class="${d.icon}"></i></div><div class="rc-name">${d.label}</div><div class="rc-sub">Ver tareas</div></div>`).join('')}<div class="role-card manager" onclick="openManager()"><div class="rc-icon"><i class="ti ti-clipboard-data"></i></div><div class="rc-name">Responsable de Calidad</div><div class="rc-sub">Registros, exportar y editar tareas</div></div></div>`;
+}
+
+function renderPin(){
+  return`<div class="pin-screen"><div style="font-size:40px;margin-bottom:12px"><i class="ti ti-lock"></i></div><h3>Acceso Responsable</h3><p>Introduce el PIN para continuar</p><input class="pin-input" type="password" id="pin-input" maxlength="4" placeholder="••••"/><div class="pin-actions"><button class="pin-btn" onclick="goHome()">Cancelar</button><button class="pin-btn primary" onclick="checkPin()">Entrar</button></div><div class="pin-error" id="pin-error"></div></div>`;
+}
+function checkPin(){const v=document.getElementById('pin-input').value;if(v===MANAGER_PIN){pinMode=false;render();}else document.getElementById('pin-error').textContent='PIN incorrecto'}
+
+function renderManager(){
+  return`<div class="top-bar"><button class="back-btn" onclick="goHome()"><i class="ti ti-arrow-left"></i> Atrás</button><span class="view-title">Responsable</span></div><div class="manager-tabs"><button class="mtab${managerTab==='registros'?' active':''}" onclick="setManagerTab('registros')"><i class="ti ti-table"></i> Registros</button><button class="mtab${managerTab==='admin'?' active':''}" onclick="setManagerTab('admin')"><i class="ti ti-settings"></i> Editar tareas</button></div>${managerTab==='registros'?renderRegistros():renderAdmin()}`;
+}
+
+function renderRegistros(){
+  const storage=getStorage(),depts=getDepts();
+  const year=managerMonth.getFullYear(),month=managerMonth.getMonth(),mondays=getMonthMondays(year,month);
+  const sections=Object.entries(depts).map(([deptId,dept])=>{
+    const rows=FREQS.flatMap(freq=>{
+      const tasks=dept.tasks[freq]||[];if(!tasks.length)return[];
+      return tasks.map((task,ti)=>{
+        const cells=mondays.map(mon=>{
+          const wk=weekKey(mon);
+          if(freq==='Diario'){const total=DAYS.filter((_,di)=>!isFutureDay(mon,di)).length;if(total===0)return`<td class="cell-na">—</td>`;const cnt=DAYS.filter((_,di)=>!!storage[`${deptId}__${wk}__Diario__${ti}__${di}`]).length;if(cnt===total)return`<td class="cell-ok"><i class="ti ti-check"></i></td>`;if(cnt===0)return`<td class="cell-ko"><i class="ti ti-x"></i></td>`;return`<td style="font-size:11px;color:var(--text2)">${cnt}/${total}</td>`;}
+          else{if(!isDue(freq,mon))return`<td class="cell-na">—</td>`;return storage[`${deptId}__${wk}__${freq}__${ti}`]?`<td class="cell-ok"><i class="ti ti-check"></i></td>`:`<td class="cell-ko"><i class="ti ti-x"></i></td>`;}
+        }).join('');
+        return`<tr><td class="task-name">${task}</td><td class="freq-label">${freq}</td>${cells}</tr>`;
+      });
+    }).join('');
+    const headers=mondays.map(mon=>{const f=new Date(mon);f.setDate(mon.getDate()+4);return`<th>${fmtDate(mon)}<br/><span style="font-weight:400;font-size:10px">${fmtDate(f)}</span></th>`;}).join('');
+    return`<div class="dept-section"><div class="dept-head"><i class="${dept.icon}"></i> ${dept.label}</div><div class="reg-wrap"><table class="reg-table"><thead><tr><th class="task-col">Tarea</th><th>Frec.</th>${headers}</tr></thead><tbody>${rows}</tbody></table></div></div>`;
+  }).join('');
+  return`<div class="month-nav"><button onclick="changeMonth(-1)"><i class="ti ti-chevron-left"></i></button><span class="month-label">${fmtMonth(managerMonth)}</span><button onclick="changeMonth(1)"><i class="ti ti-chevron-right"></i></button><div style="display:flex;gap:6px;flex-wrap:wrap"><button class="export-btn" onclick="exportWeekExcel(getMonday(0))"><i class="ti ti-device-floppy"></i> Semana</button><button class="export-btn" onclick="exportMonthExcel()"><i class="ti ti-download"></i> Mes</button></div></div><div class="legend"><span><i class="ti ti-check" style="color:var(--green)"></i> Completado</span><span><i class="ti ti-x" style="color:var(--red)"></i> Pendiente</span><span>— No toca</span></div>${sections}`;
+}
+
+function renderAdmin(){
+  const depts=getDepts(),dept=depts[adminDept];
+  const deptTabs=Object.entries(depts).map(([id,d])=>`<div class="adtab${adminDept===id?' active':''}" onclick="setAdminDept('${id}')"><i class="${d.icon}"></i> ${d.label}</div>`).join('');
+  const blocks=FREQS.map(freq=>{
+    const tasks=dept.tasks[freq]||[];
+    const rows=tasks.map((task,ti)=>`<div class="admin-task-row"><input type="text" value="${task.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}" onchange="updateTask('${adminDept}','${freq}',${ti},this.value)"/><button class="del-btn" onclick="deleteTask('${adminDept}','${freq}',${ti})"><i class="ti ti-trash"></i></button></div>`).join('');
+    return`<div class="admin-freq-block"><div class="admin-freq-label">${freq}</div>${rows}<div class="add-task-row"><input class="add-task-input" type="text" id="new-${adminDept}-${freq}" placeholder="Nueva tarea ${freq.toLowerCase()}..."/><button class="add-task-btn" onclick="addTask('${adminDept}','${freq}')"><i class="ti ti-plus"></i> Añadir</button></div></div>`;
+  }).join('');
+  const saved=savedMsg?`<div class="saved-banner"><i class="ti ti-circle-check"></i> Cambios guardados</div>`:'';
+  return`${saved}<p class="admin-hint">Edita el nombre de las tareas directamente o añade y elimina las que necesites.</p><div class="admin-dept-tabs">${deptTabs}</div>${blocks}`;
+}
+
+function renderDept(){
+  const depts=getDepts(),d=depts[currentDept];
+  const monday=getMonday(currentWeekOffset),fri=new Date(monday);fri.setDate(monday.getDate()+4);
+  const storage=getStorage(),wk=weekKey(monday);
+  let total=0,done=0;
+  FREQS.forEach(freq=>{const tasks=d.tasks[freq]||[];if(!tasks.length)return;if(freq==='Diario'){tasks.forEach((_,ti)=>DAYS.forEach((_,di)=>{if(!isFutureDay(monday,di)){total++;if(storage[`${currentDept}__${wk}__${freq}__${ti}__${di}`])done++;}}));}else{if(!isDue(freq,monday))return;tasks.forEach((_,ti)=>{total++;if(storage[`${currentDept}__${wk}__${freq}__${ti}`])done++;});}});
+  const pct=total>0?Math.round(done/total*100):0;
+  const tabs=FREQS.map(f=>{const tasks=d.tasks[f]||[];if(!tasks.length)return'';let fd=0,ft=0;if(f==='Diario'){tasks.forEach((_,ti)=>DAYS.forEach((_,di)=>{if(!isFutureDay(monday,di)){ft++;if(storage[`${currentDept}__${wk}__${f}__${ti}__${di}`])fd++;}}));}else{if(isDue(f,monday)){ft=tasks.length;tasks.forEach((_,ti)=>{if(storage[`${currentDept}__${wk}__${f}__${ti}`])fd++;});}}return`<div class="ftab${f===currentFreq?' active':''}${ft>0&&fd===ft?' fall':''}" onclick="setFreq('${f}')">${f}<span class="fbadge">${ft>0?fd+'/'+ft:'—'}</span></div>`;}).join('');
+  let taskHtml='';
+  const tasks=d.tasks[currentFreq]||[];
+  if(!tasks.length){taskHtml=`<div class="no-tasks">Sin tareas en esta frecuencia</div>`;}
+  else if(currentFreq==='Diario'){
+    const todayI=isWeekCurrent(monday)?todayIdx():-1;
+    taskHtml=`<div class="daily-wrap"><table class="daily-table"><thead><tr><th class="task-col">Tarea</th>${DAYS.map((day,di)=>`<th class="${isWeekCurrent(monday)&&di===todayI?'today-head':''}">${day}</th>`).join('')}</tr></thead><tbody>${tasks.map((task,ti)=>`<tr><td class="task-name">${task}</td>${DAYS.map((_,di)=>{const key=`${currentDept}__${wk}__Diario__${ti}__${di}`;const checked=!!storage[key],future=isFutureDay(monday,di),isToday=isWeekCurrent(monday)&&di===todayI;return`<td><div class="day-check${checked?' checked':''}${isToday?' today-col':''}${future?' future':''}" onclick="toggleDaily('${key}')">${checked?'<i class="ti ti-check"></i>':''}</div></td>`;}).join('')}</tr>`).join('')}</tbody></table></div>`;
+  }else{
+    if(!isDue(currentFreq,monday)){taskHtml=`<div class="no-tasks"><i class="ti ti-calendar-off" style="font-size:24px;display:block;margin-bottom:8px"></i>Esta semana no toca ${currentFreq.toLowerCase()}</div>`;}
+    else{taskHtml=tasks.map((task,ti)=>{const key=`${currentDept}__${wk}__${currentFreq}__${ti}`,dn=!!storage[key];return`<div class="task-item${dn?' done':''}" onclick="toggleSingle('${key}')"><div class="chk">${dn?'<i class="ti ti-check"></i>':''}</div><div class="task-text">${task}</div></div>`;}).join('');}
+  }
+  return`<div class="top-bar"><button class="back-btn" onclick="goHome()"><i class="ti ti-arrow-left"></i> Atrás</button><span class="view-title"><i class="${d.icon}" style="margin-right:4px"></i>${d.label}</span><div class="week-nav"><button onclick="changeWeek(-1)"><i class="ti ti-chevron-left"></i></button><span class="week-label">${fmtDate(monday)}–${fmtDate(fri)}</span><button onclick="changeWeek(1)" ${currentWeekOffset>=0?'disabled':''}><i class="ti ti-chevron-right"></i></button></div></div><div class="prog-wrap"><div class="prog-info"><span>${done} de ${total} completadas</span><span>${pct}%</span></div><div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div></div><div class="freq-tabs">${tabs}</div>${taskHtml}<button class="reset-btn" onclick="resetWeek()"><i class="ti ti-refresh"></i> Reiniciar semana</button>`;
+}
+
+function exportWeekExcel(monday){
+  const storage=getStorage(),depts=getDepts(),wb=XLSX.utils.book_new();
+  Object.entries(depts).forEach(([deptId,dept])=>{
+    const wk=weekKey(monday);
+    const headers=['Tarea','Frecuencia',...DAYS.map((_,di)=>{const d=new Date(monday);d.setDate(monday.getDate()+di);return fmtDate(d)}),'Resultado'];
+    const rows=[headers];
+    FREQS.forEach(freq=>(dept.tasks[freq]||[]).forEach((task,ti)=>{
+      if(freq==='Diario'){const dc=DAYS.map((_,di)=>storage[`${deptId}__${wk}__Diario__${ti}__${di}`]?'✓':'');rows.push([task,freq,...dc,dc.filter(c=>c==='✓').length+'/'+DAYS.length]);}
+      else{const due=isDue(freq,monday);rows.push([task,freq,'','','','','',due?(storage[`${deptId}__${wk}__${freq}__${ti}`]?'✓':'✗'):'— no toca']);}
+    }));
+    const ws=XLSX.utils.aoa_to_sheet(rows);ws['!cols']=[{wch:40},{wch:10},{wch:6},{wch:6},{wch:6},{wch:6},{wch:6},{wch:12}];
+    XLSX.utils.book_append_sheet(wb,ws,dept.label);
+  });
+  const s=getStorage();s['__lastExport']=new Date().toISOString();setStorage(s);bannerDismissed=true;
+  XLSX.writeFile(wb,`limpieza_semana_${weekKey(monday)}.xlsx`);render();
+}
+
+function exportMonthExcel(){
+  const storage=getStorage(),depts=getDepts(),wb=XLSX.utils.book_new();
+  const year=managerMonth.getFullYear(),month=managerMonth.getMonth(),mondays=getMonthMondays(year,month);
+  Object.entries(depts).forEach(([deptId,dept])=>{
+    const headers=['Tarea','Frecuencia',...mondays.map(m=>{const f=new Date(m);f.setDate(m.getDate()+4);return fmtDate(m)+'-'+fmtDate(f)})];
+    const rows=[headers];
+    FREQS.forEach(freq=>(dept.tasks[freq]||[]).forEach((task,ti)=>{
+      const row=[task,freq];
+      mondays.forEach(mon=>{const wk=weekKey(mon);if(freq==='Diario'){const cnt=DAYS.filter((_,di)=>!!storage[`${deptId}__${wk}__Diario__${ti}__${di}`]).length,total=DAYS.filter((_,di)=>!isFutureDay(mon,di)).length;row.push(total===0?'—':cnt+'/'+total);}else row.push(!isDue(freq,mon)?'—':(storage[`${deptId}__${wk}__${freq}__${ti}`]?'✓':'✗'));});
+      rows.push(row);
+    }));
+    XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(rows),dept.label);
+  });
+  XLSX.writeFile(wb,`registro_limpieza_${fmtMonth(managerMonth).replace(' ','_')}.xlsx`);
+}
+
+function updateTask(deptId,freq,ti,val){const d=getDepts();d[deptId].tasks[freq][ti]=val;saveDepts(d);showSaved()}
+function deleteTask(deptId,freq,ti){const d=getDepts();d[deptId].tasks[freq].splice(ti,1);saveDepts(d);showSaved();render()}
+function addTask(deptId,freq){const inp=document.getElementById(`new-${deptId}-${freq}`),val=inp.value.trim();if(!val)return;const d=getDepts();d[deptId].tasks[freq].push(val);saveDepts(d);showSaved();render()}
+function showSaved(){savedMsg=true;clearTimeout(window._st);window._st=setTimeout(()=>{savedMsg=false;render()},2500)}
+function attachEvents(){
+  const p=document.getElementById('pin-input');if(p)p.addEventListener('keydown',e=>{if(e.key==='Enter')checkPin()});
+  document.querySelectorAll('.add-task-input').forEach(inp=>{inp.addEventListener('keydown',e=>{if(e.key==='Enter'){const parts=inp.id.replace('new-','').split('-');const freq=parts.pop();addTask(parts.join('-'),freq)}})});
+}
+function openDept(d){currentDept=d;currentFreq='Diario';currentWeekOffset=0;view='dept';render()}
+function openManager(){pinMode=true;view='manager';render()}
+function goHome(){view='home';render()}
+function setFreq(f){currentFreq=f;render()}
+function changeWeek(n){currentWeekOffset=Math.min(0,currentWeekOffset+n);render()}
+function changeMonth(n){managerMonth=new Date(managerMonth.getFullYear(),managerMonth.getMonth()+n,1);render()}
+function dismissBanner(){bannerDismissed=true;render()}
+function setManagerTab(t){managerTab=t;render()}
+function setAdminDept(d){adminDept=d;render()}
+function toggleDaily(key){const s=getStorage();s[key]=!s[key];setStorage(s);render()}
+function toggleSingle(key){const s=getStorage();s[key]=!s[key];setStorage(s);render()}
+function resetWeek(){const wk=weekKey(getMonday(currentWeekOffset)),s=getStorage();Object.keys(s).forEach(k=>{if(k.startsWith(`${currentDept}__${wk}__`))delete s[k]});setStorage(s);render()}
+render();
+</script>
+</body>
+</html>
