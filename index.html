@@ -14,7 +14,7 @@
   --bg:#ffffff;--bg2:#f8f9fa;--bg3:#f1f3f5;
   --border:#dee2e6;--border2:#ced4da;
   --text:#212529;--text2:#6c757d;--text3:#adb5bd;
-  --green:#1D9E75;--red:#E24B4A;--blue:#378ADD;
+  --green:#1D9E75;--red:#E24B4A;--blue:#378ADD;--orange:#f59f00;
   --yellow-bg:#fff9db;--yellow-border:#fab005;--yellow-text:#7c5d00;
   --radius:10px;--radius-sm:6px;
   --font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
@@ -26,6 +26,9 @@
 body{font-family:var(--font);font-size:15px;background:var(--bg);color:var(--text);max-width:600px;margin:0 auto;padding:16px}
 button{cursor:pointer;font-family:var(--font)}
 input{font-family:var(--font)}
+.loading-screen{text-align:center;padding:60px 16px;color:var(--text2)}
+.loading-screen .spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--green);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px}
+@keyframes spin{to{transform:rotate(360deg)}}
 .home-title{font-size:20px;font-weight:600;margin-bottom:4px}
 .home-sub{font-size:13px;color:var(--text2);margin-bottom:16px}
 .backup-banner{background:var(--yellow-bg);border:1px solid var(--yellow-border);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
@@ -56,24 +59,26 @@ input{font-family:var(--font)}
 .ftab .fbadge{display:inline-block;background:var(--bg2);border-radius:10px;padding:1px 7px;font-size:11px;margin-left:4px}
 .ftab.fall .fbadge{background:#d3f9d8;color:#2b8a3e}
 .daily-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
-.daily-table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:16px;min-width:320px}
-.daily-table th{font-weight:600;color:var(--text2);font-size:11px;text-transform:uppercase;letter-spacing:.04em;padding:8px 4px;text-align:center;border-bottom:1px solid var(--border)}
+.daily-table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:16px;min-width:340px}
+.daily-table th{font-weight:600;color:var(--text2);font-size:11px;text-transform:uppercase;letter-spacing:.04em;padding:8px 3px;text-align:center;border-bottom:1px solid var(--border)}
 .daily-table th.task-col{text-align:left;padding-left:0}
-.daily-table td{padding:7px 4px;text-align:center;border-bottom:1px solid var(--border)}
-.daily-table td.task-name{text-align:left;padding-left:0;color:var(--text);line-height:1.35;font-size:13px}
+.daily-table td{padding:6px 3px;text-align:center;border-bottom:1px solid var(--border)}
+.daily-table td.task-name{text-align:left;padding-left:0;color:var(--text);line-height:1.35;font-size:12px}
 .today-head{color:var(--blue)!important;font-weight:700!important}
-.day-check{width:28px;height:28px;border-radius:50%;border:2px solid var(--border2);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;user-select:none}
-.day-check.checked{background:var(--green);border-color:var(--green);color:#fff}
+.day-check{width:28px;height:28px;border-radius:50%;border:2px solid var(--border2);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;font-size:11px;user-select:none;transition:background .1s;font-weight:700}
+.day-check.ok{background:var(--green);border-color:var(--green);color:#fff}
+.day-check.na{background:var(--orange);border-color:var(--orange);color:#fff;font-size:9px}
 .day-check.today-col{border-color:var(--blue)}
 .day-check.future{opacity:.3;pointer-events:none}
-.task-item{display:flex;align-items:flex-start;gap:12px;padding:12px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:8px;cursor:pointer;user-select:none}
-.task-item:active{background:var(--bg2)}
+.task-item{display:flex;align-items:center;gap:10px;padding:11px 12px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:8px}
+.task-text{font-size:13px;color:var(--text);line-height:1.4;flex:1}
 .task-item.done .task-text{color:var(--text3);text-decoration:line-through}
-.chk{width:24px;height:24px;min-width:24px;border-radius:50%;border:2px solid var(--border2);display:flex;align-items:center;justify-content:center;margin-top:1px;font-size:13px}
-.task-item.done .chk{background:var(--green);border-color:var(--green);color:#fff}
-.task-text{font-size:14px;color:var(--text);line-height:1.4}
+.task-item.na-state .task-text{color:var(--text3);font-style:italic}
+.task-actions{display:flex;gap:5px;flex-shrink:0}
+.ta-btn{width:32px;height:32px;border-radius:50%;border:2px solid var(--border2);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:12px;background:none;font-weight:700;transition:background .1s;color:var(--text3)}
+.ta-btn.ok-btn.active{background:var(--green);border-color:var(--green);color:#fff}
+.ta-btn.na-btn.active{background:var(--orange);border-color:var(--orange);color:#fff;font-size:9px}
 .no-tasks{color:var(--text2);font-size:13px;padding:16px 0;text-align:center}
-.reset-btn{margin-top:12px;width:100%;padding:10px;border:1px solid var(--border);border-radius:var(--radius);background:none;font-size:13px;color:var(--text2)}
 .manager-tabs{display:flex;gap:0;margin-bottom:20px;border-bottom:1px solid var(--border)}
 .mtab{padding:10px 16px;font-size:14px;cursor:pointer;color:var(--text2);border-bottom:2px solid transparent;margin-bottom:-1px;background:none;border-top:none;border-left:none;border-right:none;font-weight:500}
 .mtab.active{color:var(--text);border-bottom-color:var(--text);font-weight:600}
@@ -90,10 +95,11 @@ input{font-family:var(--font)}
 .reg-table td{padding:5px 6px;text-align:center;border-bottom:1px solid var(--border)}
 .reg-table td.task-name{text-align:left;color:var(--text);font-size:12px}
 .reg-table td.freq-label{font-size:11px;color:var(--text3)}
-.cell-ok{color:var(--green);font-size:15px}
-.cell-ko{color:var(--red);font-size:15px}
-.cell-na{color:var(--text3);font-size:11px}
-.legend{font-size:12px;color:var(--text2);margin-bottom:16px;display:flex;gap:12px;flex-wrap:wrap}
+.cell-ok{color:var(--green);font-size:14px}
+.cell-ko{color:var(--red);font-size:14px}
+.cell-na{color:var(--orange);font-size:11px;font-weight:700}
+.cell-dash{color:var(--text3);font-size:11px}
+.legend{font-size:12px;color:var(--text2);margin-bottom:16px;display:flex;gap:12px;flex-wrap:wrap;align-items:center}
 .pin-screen{text-align:center;padding:40px 16px}
 .pin-screen h3{font-size:18px;font-weight:600;margin-bottom:6px}
 .pin-screen p{font-size:13px;color:var(--text2);margin-bottom:20px}
@@ -118,11 +124,19 @@ input{font-family:var(--font)}
 .add-task-btn{background:none;border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 14px;font-size:13px;color:var(--text2);white-space:nowrap}
 .saved-banner{background:#d3f9d8;border:1px solid #2b8a3e;border-radius:var(--radius-sm);padding:8px 12px;font-size:13px;color:#2b8a3e;margin-bottom:16px;display:flex;align-items:center;gap:8px}
 .admin-hint{font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.5}
+.sync-bar{font-size:11px;color:var(--text3);display:flex;align-items:center;gap:5px;margin-bottom:10px}
+.sync-dot{width:7px;height:7px;border-radius:50%;background:var(--green);flex-shrink:0}
+.sync-dot.syncing{background:var(--orange);animation:pulse 1s infinite}
+.sync-dot.error{background:var(--red)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.period-label{font-size:12px;color:var(--text2);margin-bottom:10px;padding:6px 10px;background:var(--bg2);border-radius:var(--radius-sm);display:flex;align-items:center;gap:6px}
+.reset-mgr-btn{margin-top:12px;width:100%;padding:10px;border:1px solid var(--red);border-radius:var(--radius);background:none;font-size:13px;color:var(--red)}
 </style>
 </head>
 <body>
 <div id="app"></div>
 <script>
+const SCRIPT_URL='https://script.google.com/macros/s/AKfycbx4_JYJow9LhoTFtvvJH-9yDw1PAwFFBijdMv63_ziRwNyBSwO-DlaAWGi0qLy9ladG_A/exec';
 const MANAGER_PIN='1234';
 const DEFAULT_DEPTS={
   almacen:{label:'Almacén',icon:'ti ti-building-warehouse',tasks:{
@@ -146,41 +160,67 @@ const DEFAULT_DEPTS={
 };
 const FREQS=['Diario','Semanal','Quincenal','Mensual'];
 const DAYS=['L','M','X','J','V'];
+
 let view='home',currentDept=null,currentFreq='Diario',currentWeekOffset=0;
 let managerMonth=new Date(),pinMode=false,bannerDismissed=false;
 let managerTab='registros',adminDept='almacen',savedMsg=false;
+let cloudData={},syncStatus='ok',loading=true;
 
-function getStorage(){try{return JSON.parse(localStorage.getItem('limpieza_v4')||'{}')}catch(e){return{}}}
-function setStorage(d){try{localStorage.setItem('limpieza_v4',JSON.stringify(d))}catch(e){}}
-function getDepts(){const s=getStorage();return s['__depts']?JSON.parse(JSON.stringify(s['__depts'])):JSON.parse(JSON.stringify(DEFAULT_DEPTS))}
-function saveDepts(d){const s=getStorage();s['__depts']=d;setStorage(s)}
+async function cloudGet(){
+  try{
+    syncStatus='syncing';updateSyncAll();
+    const r=await fetch(SCRIPT_URL+'?t='+Date.now());
+    const j=await r.json();
+    if(j.ok)cloudData=j.data||{};
+    syncStatus='ok';
+  }catch(e){syncStatus='error';}
+  updateSyncAll();
+}
+async function cloudSet(key,value){
+  try{
+    syncStatus='syncing';updateSyncAll();
+    await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',body:JSON.stringify({action:'set',key,value})});
+    cloudData[key]=value;
+    syncStatus='ok';
+  }catch(e){cloudData[key]=value;syncStatus='error';}
+  updateSyncAll();
+}
+function updateSyncAll(){
+  document.querySelectorAll('.sync-dot').forEach(d=>{d.className='sync-dot'+(syncStatus==='syncing'?' syncing':syncStatus==='error'?' error':'');});
+  document.querySelectorAll('.sync-text').forEach(d=>{d.textContent=syncStatus==='syncing'?'Guardando...':syncStatus==='error'?'Sin conexión':'Sincronizado';});
+}
+function getVal(key){return cloudData[key]||'';}
+async function setVal(key,value){cloudData[key]=value;await cloudSet(key,value);}
+function getDepts(){return cloudData['__depts']?JSON.parse(cloudData['__depts']):JSON.parse(JSON.stringify(DEFAULT_DEPTS));}
+async function saveDepts(d){await setVal('__depts',JSON.stringify(d));}
+
 function getMonday(offset){const now=new Date(),day=now.getDay(),diff=(day===0?-6:1-day),mon=new Date(now);mon.setDate(now.getDate()+diff+offset*7);mon.setHours(0,0,0,0);return mon}
 function weekKey(m){return m.toISOString().slice(0,10)}
+function monthKey(m){return m.getFullYear()+'-'+(m.getMonth()+1).toString().padStart(2,'0')}
+function quincenaKey(monday){return monthKey(monday)+'__'+(monday.getDate()<=15?'Q1':'Q2')}
+function mensualKey(monday){return monthKey(monday)}
 function isFutureDay(monday,di){const t=new Date(monday);t.setDate(monday.getDate()+di);t.setHours(0,0,0,0);const td=new Date();td.setHours(0,0,0,0);return t>td}
-function isDue(freq,monday){const wn=getWeekNumber(monday);if(freq==='Quincenal')return wn%2===1;if(freq==='Mensual')return monday.getDate()<=7;return true}
-function getWeekNumber(d){const j=new Date(d.getFullYear(),0,1);return Math.ceil(((d-j)/86400000+j.getDay()+1)/7)}
 function fmtDate(d){return d.toLocaleDateString('es-ES',{day:'2-digit',month:'2-digit'})}
 function fmtMonth(d){return d.toLocaleDateString('es-ES',{month:'long',year:'numeric'})}
 function todayIdx(){const d=new Date().getDay();if(d===0||d===6)return -1;return d-1}
 function isWeekCurrent(monday){return weekKey(monday)===weekKey(getMonday(0))}
 function getLastWeekMonday(){return getMonday(-1)}
-function shouldShowBanner(){if(bannerDismissed)return false;const s=getStorage();const le=s['__lastExport'];if(!le)return true;return(Date.now()-new Date(le).getTime())/(1000*60*60*24)>=7}
+function shouldShowBanner(){if(bannerDismissed)return false;const le=getVal('__lastExport');if(!le)return true;return(Date.now()-new Date(le).getTime())/(1000*60*60*24)>=7}
 function getMonthMondays(year,month){let mondays=[],d=new Date(year,month,1);while(d.getDay()!==1)d.setDate(d.getDate()+1);while(mondays.length<=5){mondays.push(new Date(d));d.setDate(d.getDate()+7)}return mondays.filter(m=>{const f=new Date(m);f.setDate(m.getDate()+4);return m.getMonth()===month||f.getMonth()===month})}
 
-function render(){
-  document.getElementById('app').innerHTML=view==='home'?renderHome():view==='dept'?renderDept():pinMode?renderPin():renderManager();
-  attachEvents();
-}
+function syncBarHtml(){return`<div class="sync-bar"><div class="sync-dot${syncStatus==='syncing'?' syncing':syncStatus==='error'?' error':''}"></div><span class="sync-text">${syncStatus==='syncing'?'Guardando...':syncStatus==='error'?'Sin conexión':'Sincronizado'}</span></div>`;}
 
-function renderBanner(){
-  if(!shouldShowBanner())return'';
-  const lm=getLastWeekMonday(),fri=new Date(lm);fri.setDate(lm.getDate()+4);
-  return`<div class="backup-banner"><i class="ti ti-device-floppy"></i><span class="bb-text">Guarda el backup de la semana pasada (${fmtDate(lm)}–${fmtDate(fri)}) en Drive</span><button class="bb-btn" onclick="exportWeekExcel(getLastWeekMonday())"><i class="ti ti-download"></i> Descargar</button><button class="bb-dismiss" onclick="dismissBanner()">×</button></div>`;
+function render(){
+  const app=document.getElementById('app');
+  if(loading){app.innerHTML=`<div class="loading-screen"><div class="spinner"></div><p>Cargando datos...</p></div>`;return;}
+  app.innerHTML=view==='home'?renderHome():view==='dept'?renderDept():pinMode?renderPin():renderManager();
+  attachEvents();
 }
 
 function renderHome(){
   const depts=getDepts();
-  return`<h2 class="home-title">Plan de Limpieza</h2><p class="home-sub">Selecciona tu departamento</p>${renderBanner()}<div class="role-grid">${Object.entries(depts).map(([id,d])=>`<div class="role-card" onclick="openDept('${id}')"><div class="rc-icon"><i class="${d.icon}"></i></div><div class="rc-name">${d.label}</div><div class="rc-sub">Ver tareas</div></div>`).join('')}<div class="role-card manager" onclick="openManager()"><div class="rc-icon"><i class="ti ti-clipboard-data"></i></div><div class="rc-name">Responsable de Calidad</div><div class="rc-sub">Registros, exportar y editar tareas</div></div></div>`;
+  const banner=shouldShowBanner()?`<div class="backup-banner"><i class="ti ti-device-floppy"></i><span class="bb-text">Guarda el backup de la semana pasada en Drive</span><button class="bb-btn" onclick="exportWeekExcel(getLastWeekMonday())"><i class="ti ti-download"></i> Descargar</button><button class="bb-dismiss" onclick="dismissBanner()">×</button></div>`:'';
+  return`<h2 class="home-title">Plan de Limpieza</h2><p class="home-sub">Selecciona tu departamento</p>${banner}<div class="role-grid">${Object.entries(depts).map(([id,d])=>`<div class="role-card" onclick="openDept('${id}')"><div class="rc-icon"><i class="${d.icon}"></i></div><div class="rc-name">${d.label}</div><div class="rc-sub">Ver tareas</div></div>`).join('')}<div class="role-card manager" onclick="openManager()"><div class="rc-icon"><i class="ti ti-clipboard-data"></i></div><div class="rc-name">Responsable de Calidad</div><div class="rc-sub">Registros, exportar y editar tareas</div></div></div>`;
 }
 
 function renderPin(){
@@ -193,7 +233,7 @@ function renderManager(){
 }
 
 function renderRegistros(){
-  const storage=getStorage(),depts=getDepts();
+  const depts=getDepts();
   const year=managerMonth.getFullYear(),month=managerMonth.getMonth(),mondays=getMonthMondays(year,month);
   const sections=Object.entries(depts).map(([deptId,dept])=>{
     const rows=FREQS.flatMap(freq=>{
@@ -201,8 +241,23 @@ function renderRegistros(){
       return tasks.map((task,ti)=>{
         const cells=mondays.map(mon=>{
           const wk=weekKey(mon);
-          if(freq==='Diario'){const total=DAYS.filter((_,di)=>!isFutureDay(mon,di)).length;if(total===0)return`<td class="cell-na">—</td>`;const cnt=DAYS.filter((_,di)=>!!storage[`${deptId}__${wk}__Diario__${ti}__${di}`]).length;if(cnt===total)return`<td class="cell-ok"><i class="ti ti-check"></i></td>`;if(cnt===0)return`<td class="cell-ko"><i class="ti ti-x"></i></td>`;return`<td style="font-size:11px;color:var(--text2)">${cnt}/${total}</td>`;}
-          else{if(!isDue(freq,mon))return`<td class="cell-na">—</td>`;return storage[`${deptId}__${wk}__${freq}__${ti}`]?`<td class="cell-ok"><i class="ti ti-check"></i></td>`:`<td class="cell-ko"><i class="ti ti-x"></i></td>`;}
+          if(freq==='Diario'){
+            const total=DAYS.filter((_,di)=>!isFutureDay(mon,di)).length;
+            if(total===0)return`<td class="cell-dash">—</td>`;
+            const vals=DAYS.map((_,di)=>getVal(`${deptId}__${wk}__Diario__${ti}__${di}`));
+            const ok=vals.filter(v=>v==='ok').length,na=vals.filter(v=>v==='na').length,done=ok+na;
+            if(done===0)return`<td class="cell-ko"><i class="ti ti-x"></i></td>`;
+            if(done===total&&na===total)return`<td class="cell-na">NA</td>`;
+            if(done===total&&ok===total)return`<td class="cell-ok"><i class="ti ti-check"></i></td>`;
+            if(done===total)return`<td style="font-size:10px"><span style="color:var(--green)">${ok}✓</span><br/><span style="color:var(--orange)">${na}NA</span></td>`;
+            return`<td style="font-size:10px;color:var(--text2)">${done}/${total}</td>`;
+          } else {
+            const pk=freq==='Quincenal'?quincenaKey(mon):mensualKey(mon);
+            const val=getVal(`${deptId}__${pk}__${freq}__${ti}`);
+            if(!val)return`<td class="cell-ko"><i class="ti ti-x"></i></td>`;
+            if(val==='na')return`<td class="cell-na">NA</td>`;
+            return`<td class="cell-ok"><i class="ti ti-check"></i></td>`;
+          }
         }).join('');
         return`<tr><td class="task-name">${task}</td><td class="freq-label">${freq}</td>${cells}</tr>`;
       });
@@ -210,7 +265,7 @@ function renderRegistros(){
     const headers=mondays.map(mon=>{const f=new Date(mon);f.setDate(mon.getDate()+4);return`<th>${fmtDate(mon)}<br/><span style="font-weight:400;font-size:10px">${fmtDate(f)}</span></th>`;}).join('');
     return`<div class="dept-section"><div class="dept-head"><i class="${dept.icon}"></i> ${dept.label}</div><div class="reg-wrap"><table class="reg-table"><thead><tr><th class="task-col">Tarea</th><th>Frec.</th>${headers}</tr></thead><tbody>${rows}</tbody></table></div></div>`;
   }).join('');
-  return`<div class="month-nav"><button onclick="changeMonth(-1)"><i class="ti ti-chevron-left"></i></button><span class="month-label">${fmtMonth(managerMonth)}</span><button onclick="changeMonth(1)"><i class="ti ti-chevron-right"></i></button><div style="display:flex;gap:6px;flex-wrap:wrap"><button class="export-btn" onclick="exportWeekExcel(getMonday(0))"><i class="ti ti-device-floppy"></i> Semana</button><button class="export-btn" onclick="exportMonthExcel()"><i class="ti ti-download"></i> Mes</button></div></div><div class="legend"><span><i class="ti ti-check" style="color:var(--green)"></i> Completado</span><span><i class="ti ti-x" style="color:var(--red)"></i> Pendiente</span><span>— No toca</span></div>${sections}`;
+  return`<div class="month-nav"><button onclick="changeMonth(-1)"><i class="ti ti-chevron-left"></i></button><span class="month-label">${fmtMonth(managerMonth)}</span><button onclick="changeMonth(1)"><i class="ti ti-chevron-right"></i></button><div style="display:flex;gap:6px;flex-wrap:wrap"><button class="export-btn" onclick="exportWeekExcel(getMonday(0))"><i class="ti ti-device-floppy"></i> Semana</button><button class="export-btn" onclick="exportMonthExcel()"><i class="ti ti-download"></i> Mes</button></div></div><div class="legend"><i class="ti ti-check" style="color:var(--green)"></i> Hecho &nbsp;<i class="ti ti-x" style="color:var(--red)"></i> Pendiente &nbsp;<span style="color:var(--orange);font-weight:700">NA</span> No aplica</div>${syncBarHtml()}${sections}<button class="reset-mgr-btn" onclick="resetWeekManager()"><i class="ti ti-refresh"></i> Reiniciar semana actual</button>`;
 }
 
 function renderAdmin(){
@@ -218,60 +273,99 @@ function renderAdmin(){
   const deptTabs=Object.entries(depts).map(([id,d])=>`<div class="adtab${adminDept===id?' active':''}" onclick="setAdminDept('${id}')"><i class="${d.icon}"></i> ${d.label}</div>`).join('');
   const blocks=FREQS.map(freq=>{
     const tasks=dept.tasks[freq]||[];
-    const rows=tasks.map((task,ti)=>`<div class="admin-task-row"><input type="text" value="${task.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}" onchange="updateTask('${adminDept}','${freq}',${ti},this.value)"/><button class="del-btn" onclick="deleteTask('${adminDept}','${freq}',${ti})"><i class="ti ti-trash"></i></button></div>`).join('');
+    const rows=tasks.map((task,ti)=>`<div class="admin-task-row"><input type="text" value="${task.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;')}" onchange="updateTask('${adminDept}','${freq}',${ti},this.value)"/><button class="del-btn" onclick="deleteTask('${adminDept}','${freq}',${ti})"><i class="ti ti-trash"></i></button></div>`).join('');
     return`<div class="admin-freq-block"><div class="admin-freq-label">${freq}</div>${rows}<div class="add-task-row"><input class="add-task-input" type="text" id="new-${adminDept}-${freq}" placeholder="Nueva tarea ${freq.toLowerCase()}..."/><button class="add-task-btn" onclick="addTask('${adminDept}','${freq}')"><i class="ti ti-plus"></i> Añadir</button></div></div>`;
   }).join('');
   const saved=savedMsg?`<div class="saved-banner"><i class="ti ti-circle-check"></i> Cambios guardados</div>`:'';
-  return`${saved}<p class="admin-hint">Edita el nombre de las tareas directamente o añade y elimina las que necesites.</p><div class="admin-dept-tabs">${deptTabs}</div>${blocks}`;
+  return`${saved}<p class="admin-hint">Edita el nombre de las tareas o añade y elimina las que necesites.</p><div class="admin-dept-tabs">${deptTabs}</div>${blocks}`;
 }
 
 function renderDept(){
   const depts=getDepts(),d=depts[currentDept];
   const monday=getMonday(currentWeekOffset),fri=new Date(monday);fri.setDate(monday.getDate()+4);
-  const storage=getStorage(),wk=weekKey(monday);
+  const wk=weekKey(monday);
   let total=0,done=0;
-  FREQS.forEach(freq=>{const tasks=d.tasks[freq]||[];if(!tasks.length)return;if(freq==='Diario'){tasks.forEach((_,ti)=>DAYS.forEach((_,di)=>{if(!isFutureDay(monday,di)){total++;if(storage[`${currentDept}__${wk}__${freq}__${ti}__${di}`])done++;}}));}else{if(!isDue(freq,monday))return;tasks.forEach((_,ti)=>{total++;if(storage[`${currentDept}__${wk}__${freq}__${ti}`])done++;});}});
+  FREQS.forEach(freq=>{
+    const tasks=d.tasks[freq]||[];if(!tasks.length)return;
+    if(freq==='Diario'){tasks.forEach((_,ti)=>DAYS.forEach((_,di)=>{if(!isFutureDay(monday,di)){total++;const v=getVal(`${currentDept}__${wk}__Diario__${ti}__${di}`);if(v==='ok'||v==='na')done++;}}));}
+    else{tasks.forEach((_,ti)=>{total++;const pk=freq==='Quincenal'?quincenaKey(monday):mensualKey(monday);const v=getVal(`${currentDept}__${pk}__${freq}__${ti}`);if(v==='ok'||v==='na')done++;});}
+  });
   const pct=total>0?Math.round(done/total*100):0;
-  const tabs=FREQS.map(f=>{const tasks=d.tasks[f]||[];if(!tasks.length)return'';let fd=0,ft=0;if(f==='Diario'){tasks.forEach((_,ti)=>DAYS.forEach((_,di)=>{if(!isFutureDay(monday,di)){ft++;if(storage[`${currentDept}__${wk}__${f}__${ti}__${di}`])fd++;}}));}else{if(isDue(f,monday)){ft=tasks.length;tasks.forEach((_,ti)=>{if(storage[`${currentDept}__${wk}__${f}__${ti}`])fd++;});}}return`<div class="ftab${f===currentFreq?' active':''}${ft>0&&fd===ft?' fall':''}" onclick="setFreq('${f}')">${f}<span class="fbadge">${ft>0?fd+'/'+ft:'—'}</span></div>`;}).join('');
+  const tabs=FREQS.map(f=>{
+    const tasks=d.tasks[f]||[];if(!tasks.length)return'';
+    let fd=0,ft=0;
+    if(f==='Diario'){tasks.forEach((_,ti)=>DAYS.forEach((_,di)=>{if(!isFutureDay(monday,di)){ft++;const v=getVal(`${currentDept}__${wk}__Diario__${ti}__${di}`);if(v==='ok'||v==='na')fd++;}}));}
+    else{ft=tasks.length;tasks.forEach((_,ti)=>{const pk=f==='Quincenal'?quincenaKey(monday):mensualKey(monday);const v=getVal(`${currentDept}__${pk}__${f}__${ti}`);if(v==='ok'||v==='na')fd++;});}
+    return`<div class="ftab${f===currentFreq?' active':''}${ft>0&&fd===ft?' fall':''}" onclick="setFreq('${f}')">${f}<span class="fbadge">${ft>0?fd+'/'+ft:'—'}</span></div>`;
+  }).join('');
+
   let taskHtml='';
   const tasks=d.tasks[currentFreq]||[];
   if(!tasks.length){taskHtml=`<div class="no-tasks">Sin tareas en esta frecuencia</div>`;}
   else if(currentFreq==='Diario'){
     const todayI=isWeekCurrent(monday)?todayIdx():-1;
-    taskHtml=`<div class="daily-wrap"><table class="daily-table"><thead><tr><th class="task-col">Tarea</th>${DAYS.map((day,di)=>`<th class="${isWeekCurrent(monday)&&di===todayI?'today-head':''}">${day}</th>`).join('')}</tr></thead><tbody>${tasks.map((task,ti)=>`<tr><td class="task-name">${task}</td>${DAYS.map((_,di)=>{const key=`${currentDept}__${wk}__Diario__${ti}__${di}`;const checked=!!storage[key],future=isFutureDay(monday,di),isToday=isWeekCurrent(monday)&&di===todayI;return`<td><div class="day-check${checked?' checked':''}${isToday?' today-col':''}${future?' future':''}" onclick="toggleDaily('${key}')">${checked?'<i class="ti ti-check"></i>':''}</div></td>`;}).join('')}</tr>`).join('')}</tbody></table></div>`;
-  }else{
-    if(!isDue(currentFreq,monday)){taskHtml=`<div class="no-tasks"><i class="ti ti-calendar-off" style="font-size:24px;display:block;margin-bottom:8px"></i>Esta semana no toca ${currentFreq.toLowerCase()}</div>`;}
-    else{taskHtml=tasks.map((task,ti)=>{const key=`${currentDept}__${wk}__${currentFreq}__${ti}`,dn=!!storage[key];return`<div class="task-item${dn?' done':''}" onclick="toggleSingle('${key}')"><div class="chk">${dn?'<i class="ti ti-check"></i>':''}</div><div class="task-text">${task}</div></div>`;}).join('');}
+    taskHtml=`<div class="daily-wrap"><table class="daily-table"><thead><tr><th class="task-col">Tarea</th>${DAYS.map((day,di)=>`<th class="${isWeekCurrent(monday)&&di===todayI?'today-head':''}">${day}</th>`).join('')}</tr></thead><tbody>${tasks.map((task,ti)=>`<tr><td class="task-name">${task}</td>${DAYS.map((_,di)=>{const key=`${currentDept}__${wk}__Diario__${ti}__${di}`;const val=getVal(key);const future=isFutureDay(monday,di),isToday=isWeekCurrent(monday)&&di===todayI;const cls=val==='ok'?'ok':val==='na'?'na':'';const icon=val==='ok'?'<i class="ti ti-check"></i>':val==='na'?'NA':'';return`<td><div class="day-check${cls?' '+cls:''}${isToday?' today-col':''}${future?' future':''}" onclick="cycleDailyState('${key}')">${icon}</div></td>`;}).join('')}</tr>`).join('')}</tbody></table></div>`;
+  } else {
+    const pk=currentFreq==='Quincenal'?quincenaKey(monday):mensualKey(monday);
+    const isQ1=monday.getDate()<=15;
+    const mes=monday.toLocaleDateString('es-ES',{month:'long'});
+    const periodoLabel=currentFreq==='Quincenal'
+      ?`Período: ${isQ1?'1–15':'16–fin'} de ${mes} — marca cuando lo hagas`
+      :`Período: mes de ${mes} — marca cuando lo hagas`;
+    taskHtml=`<div class="period-label"><i class="ti ti-calendar"></i> ${periodoLabel}</div>`
+      +tasks.map((task,ti)=>{
+        const key=`${currentDept}__${pk}__${currentFreq}__${ti}`;
+        const val=getVal(key);
+        const isOk=val==='ok',isNa=val==='na';
+        return`<div class="task-item${isOk?' done':isNa?' na-state':''}"><div class="task-text">${task}</div><div class="task-actions"><button class="ta-btn ok-btn${isOk?' active':''}" onclick="setSingleState('${key}','ok')"><i class="ti ti-check"></i></button><button class="ta-btn na-btn${isNa?' active':''}" onclick="setSingleState('${key}','na')">NA</button></div></div>`;
+      }).join('');
   }
-  return`<div class="top-bar"><button class="back-btn" onclick="goHome()"><i class="ti ti-arrow-left"></i> Atrás</button><span class="view-title"><i class="${d.icon}" style="margin-right:4px"></i>${d.label}</span><div class="week-nav"><button onclick="changeWeek(-1)"><i class="ti ti-chevron-left"></i></button><span class="week-label">${fmtDate(monday)}–${fmtDate(fri)}</span><button onclick="changeWeek(1)" ${currentWeekOffset>=0?'disabled':''}><i class="ti ti-chevron-right"></i></button></div></div><div class="prog-wrap"><div class="prog-info"><span>${done} de ${total} completadas</span><span>${pct}%</span></div><div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div></div><div class="freq-tabs">${tabs}</div>${taskHtml}<button class="reset-btn" onclick="resetWeek()"><i class="ti ti-refresh"></i> Reiniciar semana</button>`;
+
+  return`<div class="top-bar"><button class="back-btn" onclick="goHome()"><i class="ti ti-arrow-left"></i> Atrás</button><span class="view-title"><i class="${d.icon}" style="margin-right:4px"></i>${d.label}</span><div class="week-nav"><button onclick="changeWeek(-1)"><i class="ti ti-chevron-left"></i></button><span class="week-label">${fmtDate(monday)}–${fmtDate(fri)}</span><button onclick="changeWeek(1)" ${currentWeekOffset>=0?'disabled':''}><i class="ti ti-chevron-right"></i></button></div></div><div class="prog-wrap"><div class="prog-info"><span>${done} de ${total} completadas</span><span>${pct}%</span></div><div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div></div>${syncBarHtml()}<div class="freq-tabs">${tabs}</div>${taskHtml}`;
+}
+
+async function cycleDailyState(key){const cur=getVal(key);const next=cur===''?'ok':cur==='ok'?'na':'';await setVal(key,next);render();}
+async function setSingleState(key,state){const cur=getVal(key);await setVal(key,cur===state?'':state);render();}
+async function updateTask(deptId,freq,ti,val){const d=getDepts();d[deptId].tasks[freq][ti]=val;await saveDepts(d);showSaved()}
+async function deleteTask(deptId,freq,ti){const d=getDepts();d[deptId].tasks[freq].splice(ti,1);await saveDepts(d);showSaved();render()}
+async function addTask(deptId,freq){const inp=document.getElementById(`new-${deptId}-${freq}`),val=inp.value.trim();if(!val)return;const d=getDepts();d[deptId].tasks[freq].push(val);await saveDepts(d);showSaved();render()}
+function showSaved(){savedMsg=true;clearTimeout(window._st);window._st=setTimeout(()=>{savedMsg=false;render()},2500)}
+function dismissBanner(){bannerDismissed=true;render()}
+
+async function resetWeekManager(){
+  if(!confirm('¿Seguro que quieres reiniciar todos los registros de la semana actual?'))return;
+  const monday=getMonday(0),wk=weekKey(monday);
+  const keys=Object.keys(cloudData).filter(k=>k.includes('__'+wk+'__'));
+  for(const k of keys){await setVal(k,'');}
+  render();
 }
 
 function exportWeekExcel(monday){
-  const storage=getStorage(),depts=getDepts(),wb=XLSX.utils.book_new();
+  const depts=getDepts(),wb=XLSX.utils.book_new();
   Object.entries(depts).forEach(([deptId,dept])=>{
     const wk=weekKey(monday);
     const headers=['Tarea','Frecuencia',...DAYS.map((_,di)=>{const d=new Date(monday);d.setDate(monday.getDate()+di);return fmtDate(d)}),'Resultado'];
     const rows=[headers];
     FREQS.forEach(freq=>(dept.tasks[freq]||[]).forEach((task,ti)=>{
-      if(freq==='Diario'){const dc=DAYS.map((_,di)=>storage[`${deptId}__${wk}__Diario__${ti}__${di}`]?'✓':'');rows.push([task,freq,...dc,dc.filter(c=>c==='✓').length+'/'+DAYS.length]);}
-      else{const due=isDue(freq,monday);rows.push([task,freq,'','','','','',due?(storage[`${deptId}__${wk}__${freq}__${ti}`]?'✓':'✗'):'— no toca']);}
+      if(freq==='Diario'){const dc=DAYS.map((_,di)=>{const v=getVal(`${deptId}__${wk}__Diario__${ti}__${di}`);return v==='ok'?'✓':v==='na'?'NA':''});const ok=dc.filter(c=>c==='✓').length,na=dc.filter(c=>c==='NA').length;rows.push([task,freq,...dc,`✓${ok} NA${na}`]);}
+      else{const pk=freq==='Quincenal'?quincenaKey(monday):mensualKey(monday);const v=getVal(`${deptId}__${pk}__${freq}__${ti}`);rows.push([task,freq,'','','','','',v==='ok'?'✓':v==='na'?'NA':'✗']);}
     }));
     const ws=XLSX.utils.aoa_to_sheet(rows);ws['!cols']=[{wch:40},{wch:10},{wch:6},{wch:6},{wch:6},{wch:6},{wch:6},{wch:12}];
     XLSX.utils.book_append_sheet(wb,ws,dept.label);
   });
-  const s=getStorage();s['__lastExport']=new Date().toISOString();setStorage(s);bannerDismissed=true;
+  setVal('__lastExport',new Date().toISOString());bannerDismissed=true;
   XLSX.writeFile(wb,`limpieza_semana_${weekKey(monday)}.xlsx`);render();
 }
 
 function exportMonthExcel(){
-  const storage=getStorage(),depts=getDepts(),wb=XLSX.utils.book_new();
+  const depts=getDepts(),wb=XLSX.utils.book_new();
   const year=managerMonth.getFullYear(),month=managerMonth.getMonth(),mondays=getMonthMondays(year,month);
   Object.entries(depts).forEach(([deptId,dept])=>{
     const headers=['Tarea','Frecuencia',...mondays.map(m=>{const f=new Date(m);f.setDate(m.getDate()+4);return fmtDate(m)+'-'+fmtDate(f)})];
     const rows=[headers];
     FREQS.forEach(freq=>(dept.tasks[freq]||[]).forEach((task,ti)=>{
       const row=[task,freq];
-      mondays.forEach(mon=>{const wk=weekKey(mon);if(freq==='Diario'){const cnt=DAYS.filter((_,di)=>!!storage[`${deptId}__${wk}__Diario__${ti}__${di}`]).length,total=DAYS.filter((_,di)=>!isFutureDay(mon,di)).length;row.push(total===0?'—':cnt+'/'+total);}else row.push(!isDue(freq,mon)?'—':(storage[`${deptId}__${wk}__${freq}__${ti}`]?'✓':'✗'));});
+      mondays.forEach(mon=>{const wk=weekKey(mon);if(freq==='Diario'){const vals=DAYS.map((_,di)=>getVal(`${deptId}__${wk}__Diario__${ti}__${di}`));const ok=vals.filter(v=>v==='ok').length,na=vals.filter(v=>v==='na').length,total=DAYS.filter((_,di)=>!isFutureDay(mon,di)).length;row.push(total===0?'—':`✓${ok} NA${na}/${total}`);}else{const pk=freq==='Quincenal'?quincenaKey(mon):mensualKey(mon);const v=getVal(`${deptId}__${pk}__${freq}__${ti}`);row.push(v==='ok'?'✓':v==='na'?'NA':'✗');}});
       rows.push(row);
     }));
     XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(rows),dept.label);
@@ -279,27 +373,21 @@ function exportMonthExcel(){
   XLSX.writeFile(wb,`registro_limpieza_${fmtMonth(managerMonth).replace(' ','_')}.xlsx`);
 }
 
-function updateTask(deptId,freq,ti,val){const d=getDepts();d[deptId].tasks[freq][ti]=val;saveDepts(d);showSaved()}
-function deleteTask(deptId,freq,ti){const d=getDepts();d[deptId].tasks[freq].splice(ti,1);saveDepts(d);showSaved();render()}
-function addTask(deptId,freq){const inp=document.getElementById(`new-${deptId}-${freq}`),val=inp.value.trim();if(!val)return;const d=getDepts();d[deptId].tasks[freq].push(val);saveDepts(d);showSaved();render()}
-function showSaved(){savedMsg=true;clearTimeout(window._st);window._st=setTimeout(()=>{savedMsg=false;render()},2500)}
 function attachEvents(){
   const p=document.getElementById('pin-input');if(p)p.addEventListener('keydown',e=>{if(e.key==='Enter')checkPin()});
   document.querySelectorAll('.add-task-input').forEach(inp=>{inp.addEventListener('keydown',e=>{if(e.key==='Enter'){const parts=inp.id.replace('new-','').split('-');const freq=parts.pop();addTask(parts.join('-'),freq)}})});
 }
+
 function openDept(d){currentDept=d;currentFreq='Diario';currentWeekOffset=0;view='dept';render()}
 function openManager(){pinMode=true;view='manager';render()}
 function goHome(){view='home';render()}
 function setFreq(f){currentFreq=f;render()}
 function changeWeek(n){currentWeekOffset=Math.min(0,currentWeekOffset+n);render()}
 function changeMonth(n){managerMonth=new Date(managerMonth.getFullYear(),managerMonth.getMonth()+n,1);render()}
-function dismissBanner(){bannerDismissed=true;render()}
 function setManagerTab(t){managerTab=t;render()}
 function setAdminDept(d){adminDept=d;render()}
-function toggleDaily(key){const s=getStorage();s[key]=!s[key];setStorage(s);render()}
-function toggleSingle(key){const s=getStorage();s[key]=!s[key];setStorage(s);render()}
-function resetWeek(){const wk=weekKey(getMonday(currentWeekOffset)),s=getStorage();Object.keys(s).forEach(k=>{if(k.startsWith(`${currentDept}__${wk}__`))delete s[k]});setStorage(s);render()}
-render();
+
+(async()=>{render();await cloudGet();loading=false;render();})();
 </script>
 </body>
 </html>
