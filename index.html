@@ -359,16 +359,91 @@ function exportWeekExcel(monday){
 
 function exportMonthExcel(){
   const depts=getDepts(),wb=XLSX.utils.book_new();
-  const year=managerMonth.getFullYear(),month=managerMonth.getMonth(),mondays=getMonthMondays(year,month);
+  const year=managerMonth.getFullYear(),month=managerMonth.getMonth();
+  const mondays=getMonthMondays(year,month);
+
+  // Build all working days of the month
+  const workDays=[];
+  const dayNames=['','L','M','X','J','V','',''];
+  const daysInMonth=new Date(year,month+1,0).getDate();
+  for(let day=1;day<=daysInMonth;day++){
+    const d=new Date(year,month,day);
+    const dow=d.getDay();
+    if(dow>=1&&dow<=5) workDays.push({date:d,day,dow,label:dayNames[dow]+' '+day});
+  }
+
   Object.entries(depts).forEach(([deptId,dept])=>{
-    const headers=['Tarea','Frecuencia',...mondays.map(m=>{const f=new Date(m);f.setDate(m.getDate()+4);return fmtDate(m)+'-'+fmtDate(f)})];
-    const rows=[headers];
-    FREQS.forEach(freq=>(dept.tasks[freq]||[]).forEach((task,ti)=>{
-      const row=[task,freq];
-      mondays.forEach(mon=>{const wk=weekKey(mon);if(freq==='Diario'){const vals=DAYS.map((_,di)=>getVal(`${deptId}__${wk}__Diario__${ti}__${di}`));const ok=vals.filter(v=>v==='ok').length,na=vals.filter(v=>v==='na').length,total=DAYS.filter((_,di)=>!isFutureDay(mon,di)).length;row.push(total===0?'—':`✓${ok} NA${na}/${total}`);}else{const pk=freq==='Quincenal'?quincenaKey(mon):mensualKey(mon);const v=getVal(`${deptId}__${pk}__${freq}__${ti}`);row.push(v==='ok'?'✓':v==='na'?'NA':'✗');}});
-      rows.push(row);
-    }));
-    XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(rows),dept.label);
+    // Headers: Tarea | Frecuencia | [workdays...] | [weeks for semanal] | [quincenas] | [mes]
+    const dailyHeaders=workDays.map(d=>d.label);
+    const weekHeaders=mondays.map(m=>{const f=new Date(m);f.setDate(m.getDate()+4);return fmtDate(m)+'–'+fmtDate(f);});
+
+    // Separate tasks by freq for cleaner layout
+    const allRows=[];
+
+    // Header row
+    const maxCols=2+Math.max(workDays.length, mondays.length+2);
+    allRows.push(['DEPARTAMENTO: '+dept.label.toUpperCase()]);
+    allRows.push([]);
+
+    FREQS.forEach(freq=>{
+      const tasks=dept.tasks[freq]||[];
+      if(!tasks.length)return;
+
+      if(freq==='Diario'){
+        allRows.push(['Tarea','Frecuencia',...dailyHeaders]);
+        tasks.forEach((task,ti)=>{
+          const row=[task,freq];
+          workDays.forEach(({date,dow})=>{
+            const mon=new Date(date);mon.setDate(date.getDate()-(dow-1));mon.setHours(0,0,0,0);
+            const wk=weekKey(mon);
+            const di=dow-1;
+            const v=getVal(`${deptId}__${wk}__Diario__${ti}__${di}`);
+            const today=new Date();today.setHours(0,0,0,0);
+            if(date>today){row.push('');}
+            else{row.push(v==='ok'?'✓':v==='na'?'NA':'✗');}
+          });
+          allRows.push(row);
+        });
+      } else if(freq==='Semanal'){
+        allRows.push([]);
+        allRows.push(['Tarea','Frecuencia',...weekHeaders]);
+        tasks.forEach((task,ti)=>{
+          const row=[task,freq];
+          mondays.forEach(mon=>{
+            const pk=weekKey(mon);
+            const v=getVal(`${deptId}__${pk}__Semanal__${ti}`);
+            row.push(v==='ok'?'✓':v==='na'?'NA':'✗');
+          });
+          allRows.push(row);
+        });
+      } else if(freq==='Quincenal'){
+        const q1label='1ª quincena (1–15)';
+        const q2label='2ª quincena (16–fin)';
+        allRows.push([]);
+        allRows.push(['Tarea','Frecuencia',q1label,q2label]);
+        tasks.forEach((task,ti)=>{
+          const monQ1=new Date(year,month,1);while(monQ1.getDay()!==1)monQ1.setDate(monQ1.getDate()+1);
+          const monQ2=new Date(year,month,16);while(monQ2.getDay()!==1)monQ2.setDate(monQ2.getDate()+1);if(monQ2.getMonth()!==month)monQ2.setDate(monQ2.getDate()-7);
+          const vQ1=getVal(`${deptId}__${quincenaKey(monQ1)}__Quincenal__${ti}`);
+          const vQ2=getVal(`${deptId}__${quincenaKey(monQ2)}__Quincenal__${ti}`);
+          allRows.push([task,freq,vQ1==='ok'?'✓':vQ1==='na'?'NA':'✗',vQ2==='ok'?'✓':vQ2==='na'?'NA':'✗']);
+        });
+      } else if(freq==='Mensual'){
+        allRows.push([]);
+        allRows.push(['Tarea','Frecuencia',fmtMonth(managerMonth)]);
+        tasks.forEach((task,ti)=>{
+          const mk=monthKey(managerMonth);
+          const v=getVal(`${deptId}__${mk}__Mensual__${ti}`);
+          allRows.push([task,freq,v==='ok'?'✓':v==='na'?'NA':'✗']);
+        });
+      }
+      allRows.push([]);
+    });
+
+    const ws=XLSX.utils.aoa_to_sheet(allRows);
+    // Column widths
+    ws['!cols']=[{wch:38},{wch:10},...Array(31).fill({wch:6})];
+    XLSX.utils.book_append_sheet(wb,ws,dept.label);
   });
   XLSX.writeFile(wb,`registro_limpieza_${fmtMonth(managerMonth).replace(' ','_')}.xlsx`);
 }
