@@ -252,7 +252,7 @@ function renderRegistros(){
             if(done===total)return`<td style="font-size:10px"><span style="color:var(--green)">${ok}✓</span><br/><span style="color:var(--orange)">${na}NA</span></td>`;
             return`<td style="font-size:10px;color:var(--text2)">${done}/${total}</td>`;
           } else {
-            const pk=freq==='Quincenal'?quincenaKey(mon):mensualKey(mon);
+            const pk=freq==='Semanal'?weekKey(mon):freq==='Quincenal'?quincenaKey(mon):mensualKey(mon);
             const val=getVal(`${deptId}__${pk}__${freq}__${ti}`);
             if(!val)return`<td class="cell-ko"><i class="ti ti-x"></i></td>`;
             if(val==='na')return`<td class="cell-na">NA</td>`;
@@ -288,14 +288,14 @@ function renderDept(){
   FREQS.forEach(freq=>{
     const tasks=d.tasks[freq]||[];if(!tasks.length)return;
     if(freq==='Diario'){tasks.forEach((_,ti)=>DAYS.forEach((_,di)=>{if(!isFutureDay(monday,di)){total++;const v=getVal(`${currentDept}__${wk}__Diario__${ti}__${di}`);if(v==='ok'||v==='na')done++;}}));}
-    else{tasks.forEach((_,ti)=>{total++;const pk=freq==='Quincenal'?quincenaKey(monday):mensualKey(monday);const v=getVal(`${currentDept}__${pk}__${freq}__${ti}`);if(v==='ok'||v==='na')done++;});}
+    else{tasks.forEach((_,ti)=>{total++;const pk=freq==='Semanal'?wk:freq==='Quincenal'?quincenaKey(monday):mensualKey(monday);const v=getVal(`${currentDept}__${pk}__${freq}__${ti}`);if(v==='ok'||v==='na')done++;});}
   });
   const pct=total>0?Math.round(done/total*100):0;
   const tabs=FREQS.map(f=>{
     const tasks=d.tasks[f]||[];if(!tasks.length)return'';
     let fd=0,ft=0;
     if(f==='Diario'){tasks.forEach((_,ti)=>DAYS.forEach((_,di)=>{if(!isFutureDay(monday,di)){ft++;const v=getVal(`${currentDept}__${wk}__Diario__${ti}__${di}`);if(v==='ok'||v==='na')fd++;}}));}
-    else{ft=tasks.length;tasks.forEach((_,ti)=>{const pk=f==='Quincenal'?quincenaKey(monday):mensualKey(monday);const v=getVal(`${currentDept}__${pk}__${f}__${ti}`);if(v==='ok'||v==='na')fd++;});}
+    else{ft=tasks.length;tasks.forEach((_,ti)=>{const pk=f==='Semanal'?wk:f==='Quincenal'?quincenaKey(monday):mensualKey(monday);const v=getVal(`${currentDept}__${pk}__${f}__${ti}`);if(v==='ok'||v==='na')fd++;});}
     return`<div class="ftab${f===currentFreq?' active':''}${ft>0&&fd===ft?' fall':''}" onclick="setFreq('${f}')">${f}<span class="fbadge">${ft>0?fd+'/'+ft:'—'}</span></div>`;
   }).join('');
 
@@ -306,7 +306,7 @@ function renderDept(){
     const todayI=isWeekCurrent(monday)?todayIdx():-1;
     taskHtml=`<div class="daily-wrap"><table class="daily-table"><thead><tr><th class="task-col">Tarea</th>${DAYS.map((day,di)=>`<th class="${isWeekCurrent(monday)&&di===todayI?'today-head':''}">${day}</th>`).join('')}</tr></thead><tbody>${tasks.map((task,ti)=>`<tr><td class="task-name">${task}</td>${DAYS.map((_,di)=>{const key=`${currentDept}__${wk}__Diario__${ti}__${di}`;const val=getVal(key);const future=isFutureDay(monday,di),isToday=isWeekCurrent(monday)&&di===todayI;const cls=val==='ok'?'ok':val==='na'?'na':'';const icon=val==='ok'?'<i class="ti ti-check"></i>':val==='na'?'NA':'';return`<td><div class="day-check${cls?' '+cls:''}${isToday?' today-col':''}${future?' future':''}" onclick="cycleDailyState('${key}')">${icon}</div></td>`;}).join('')}</tr>`).join('')}</tbody></table></div>`;
   } else {
-    const pk=currentFreq==='Quincenal'?quincenaKey(monday):mensualKey(monday);
+    const pk=currentFreq==='Semanal'?weekKey(monday):currentFreq==='Quincenal'?quincenaKey(monday):mensualKey(monday);
     const isQ1=monday.getDate()<=15;
     const mes=monday.toLocaleDateString('es-ES',{month:'long'});
     const periodoLabel=currentFreq==='Quincenal'
